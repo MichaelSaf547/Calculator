@@ -89,12 +89,12 @@ static void CalcApp_vidGetOperandOneProcess(u8 Copy_u8KeyValue){
         
         /* MINUS OPERATION */ 
         if(CalcApp_u8Sign == 1){
-            CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Loc_u8PressedValue) * -1;  
+            CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Copy_u8KeyValue) * -1;  
             CalcApp_u8Sign = 0;
         }
         
         else{
-            CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Loc_u8PressedValue);  
+            CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Copy_u8KeyValue);  
         }
         
         /* CHANGE THE CURRENT STATE */ 
@@ -123,12 +123,12 @@ static void CalcApp_vidGetOperandTwoProcess(u8 Copy_u8KeyValue){
         
         /* MINUS OPERATION */ 
         if(CalcApp_u8Sign == 1){
-            CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Loc_u8PressedValue) * -1;  
+            CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Copy_u8KeyValue) * -1;  
             CalcApp_u8Sign = 0;
         }
         
         else{
-            CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Loc_u8PressedValue);  
+            CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Copy_u8KeyValue);  
         }
         
         /* CHANGE THE CURRENT STATE */ 
