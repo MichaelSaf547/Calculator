@@ -145,7 +145,7 @@ static void CalcApp_vidGetOperandTwoProcess(){
             }
             
             /* CHANGE THE CURRENT STATE */ 
-            CalcApp_enuCurrentState = CalcApp_enuDisplayOperandOneState;
+            CalcApp_enuCurrentState = CalcApp_enuDisplayOperandTwoState;
 
         }
         
