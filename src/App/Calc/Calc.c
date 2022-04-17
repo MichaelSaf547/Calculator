@@ -92,8 +92,24 @@ void CalcApp_Init(void) {
 	CalcApp_strCurrInputData.CalcApp_strOperand2 = 0;
 	CalcApp_strCurrInputData.CalcApp_strOperation = 0;
 	CalcApp_strCurrOutputData.CalcApp_strResult = 0;
-	CalcApp_strCurrOutputData.CalcApp_strFloatNumFlag =
-			CALC_APP_FLOAT_NUM_FLAG_NEXSIT;
+	CalcApp_strCurrOutputData.CalcApp_strFloatNumFlag = CALC_APP_FLOAT_NUM_FLAG_NEXSIT;\
+            
+    RCC_enuEnablePreipheral      (AHB1_BUS, GPIOA_RCC);
+	RCC_enuEnablePreipheral      (AHB1_BUS, GPIOB_RCC);
+	RCC_enuEnablePreipheral      (AHB1_BUS, GPIOC_RCC);
+	RCC_enuEnablePreipheral      (AHB1_BUS, GPIOD_RCC);
+
+	Keypad_enuInit();
+	Lcd_vidInit();
+	
+    Runnable_t Loc_runnable;
+	Loc_runnable.CyclicTimems = 100;
+	Loc_run.cbfP = CalcApp_vidTask;
+	Sched_RegisterRunnable(&Loc_run, 2);
+    
+    Sched_vidInit();	
+	Sched_vidStart();
+
 }
 
 static void CalcApp_vidStartProcess(){
