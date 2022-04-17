@@ -36,7 +36,13 @@ static void CalcApp_vidStartProcess();
 
 static void CalcApp_vidGetOperandOneProcess();
 
+static void CalcApp_vidDisplayOperandOneProcess();
+
+static void CalcApp_vidDisplayOperationProcess();
+
 static void CalcApp_vidGetOperandTwoProcess();
+
+static void CalcApp_vidDisplayOperandTwoProcess();
 
 CalcApp_enuErrorStatus CalcApp_CalcResult(void);
 
@@ -53,9 +59,22 @@ void CalcApp_vidTask(){
              CalcApp_vidGetOperandOneProcess();
         break;
         
+        case CalcApp_enuDisplayOperandOneState:
+        	CalcApp_vidDisplayOperandOneProcess();
+        	break;
+
+        case CalcApp_enuDisplayOperationState:
+        	CalcApp_vidDisplayOperationProcess();
+        	break;
+
         case CalcApp_enuGetOperandTwoState:
              CalcApp_vidGetOperandTwoProcess();
         break;
+
+        case CalcApp_enuDisplayOperandTwoState:
+			CalcApp_vidDisplayOperandTwoProcess();
+			break;
+
 		case CalcApp_enuCalculateResultState: /*calculate the result */
         	CalcApp_ErrorState = CalcApp_CalcResult();
         break;
@@ -151,6 +170,48 @@ static void CalcApp_vidGetOperandOneProcess(){
         }
     }
 }
+
+static void CalcApp_vidDisplayOperandOneProcess()
+{
+	u8 Loc_u8Temp;
+
+	/* firstEntrant flag for the process */
+	static u8 firstEntrant = 1;
+
+	/* negativeFlag for operand one */
+	u8 negativeFlag = ((CalcApp_strCurrInputData.CalcApp_strOperand1) < 0);
+
+	/* check for the sign of operand one */
+	if ((negativeFlag) && (firstEntrant)){
+
+		/* invalidate flag of firstEntrant for the process */
+		firstEntrant = 0;
+
+		/* display negative sign in case of negative number in operand one */
+		Lcd_vidDisplayCharacter('-');	// '-' isn't the cute emoji
+	}
+	/* Extract one digit of operand one to be displayed */
+	Loc_u8Temp = (negativeFlag) ?
+			/* get rid off the minus sign in case of negative number */
+			(u8)(((CalcApp_strCurrInputData.CalcApp_strOperand1) % 10) * -1)
+			: (u8)((CalcApp_strCurrInputData.CalcApp_strOperand1) % 10);
+
+	/* display one digit of operand one */
+	Lcd_vidDisplayCharacter(Loc_u8Temp);
+
+	/* update current state */
+	CalcApp_enuCurrentState = CalcApp_enuGetOperandOneState;
+}
+
+static void CalcApp_vidDisplayOperationProcess()
+{
+	/* display operation symbol */
+	Lcd_vidDisplayCharacter(CalcApp_strCurrInputData.CalcApp_strOperation);
+
+	/* update current state */
+	CalcApp_enuCurrentState = CalcApp_enuGetOperandTwoState;
+}
+
 static void CalcApp_vidGetOperandTwoProcess(){
     
     Keypad_tenuErrorStatus Loc_enuErrorStatus = Keypad_enuNotOk;
@@ -205,7 +266,37 @@ static void CalcApp_vidGetOperandTwoProcess(){
     }
 }
 
+static void CalcApp_vidDisplayOperandTwoProcess()
+{
+	u8 Loc_u8Temp;
 
+	/* firstEntrant flag for the process */
+	static u8 firstEntrant = 1;
+
+	/* negativeFlag for operand two */
+	u8 negativeFlag = ((CalcApp_strCurrInputData.CalcApp_strOperand2) < 0);
+
+	/* check for the sign of operand two */
+	if ((negativeFlag) && (firstEntrant)){
+
+		/* invalidate flag of firstEntrant for the process */
+		firstEntrant = 0;
+
+		/* display negative sign in case of negative number in operand two */
+		Lcd_vidDisplayCharacter('-');	// '-' isn't the cute emoji
+	}
+	/* Extract one digit of operand two to be displayed */
+	Loc_u8Temp = (negativeFlag) ?
+			/* get rid off the minus sign in case of negative number */
+			(u8)(((CalcApp_strCurrInputData.CalcApp_strOperand2) % 10) * -1)
+			: (u8)((CalcApp_strCurrInputData.CalcApp_strOperand2) % 10);
+
+	/* display one digit of operand two */
+	Lcd_vidDisplayCharacter(Loc_u8Temp);
+
+	/* update current state */
+	CalcApp_enuCurrentState = CalcApp_enuDone;
+}
 
 /*
  * Name:  CalcApp_CalcResult
