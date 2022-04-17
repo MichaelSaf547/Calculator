@@ -38,6 +38,7 @@ typedef enum{
     CalcApp_enuCalculateResultState,
     
     CalcApp_enuDisplayResultState,
+	CalcApp_enuDone
     
 }CalcApp_enuOperandState;
 
