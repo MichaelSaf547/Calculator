@@ -9,7 +9,7 @@
 
 #include "../../Lib/Std_types.h"
 #include "../../Lib/Bit_utils.h"
-#include "../Gpio/Gpio.h"
+#include "../../Mcal/Gpio/Gpio.h"
 #include "Lcd.h"
 #include "Lcd_prv.h"
 #include "Lcd_cfg.h"
@@ -472,22 +472,22 @@ extern void SendCommand_Process(void)
 			 * 						Low En
 			 * 						High RS
 			 */
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_OFF);
 
 			/*Send the data bit by bit on the bus*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D0_PIN].Lcd_Port, Lcd_Pins[LCD_D0_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D1_PIN].Lcd_Port, Lcd_Pins[LCD_D1_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D2_PIN].Lcd_Port, Lcd_Pins[LCD_D2_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D3_PIN].Lcd_Port, Lcd_Pins[LCD_D3_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
+			gpio_setPinValue(Lcd_Pins[LCD_D0_PIN].Lcd_Port, Lcd_Pins[LCD_D0_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
+			gpio_setPinValue(Lcd_Pins[LCD_D1_PIN].Lcd_Port, Lcd_Pins[LCD_D1_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
+			gpio_setPinValue(Lcd_Pins[LCD_D2_PIN].Lcd_Port, Lcd_Pins[LCD_D2_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
+			gpio_setPinValue(Lcd_Pins[LCD_D3_PIN].Lcd_Port, Lcd_Pins[LCD_D3_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
+			gpio_setPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
+			gpio_setPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
+			gpio_setPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
+			gpio_setPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
 
 			/*Send High Enable signal*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
 
 			/*Set Lcd_enuSendComm0 to Loc_enuSendCommState for the next Tick*/
 			Loc_enuSendCommState = Lcd_enuSendComm0;
@@ -498,7 +498,7 @@ extern void SendCommand_Process(void)
 		case Lcd_enuSendComm0:
 		{
 		    /*Send a Low Enable signal to the LCD*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
 
 			/*Set Lcd_enuSendComm0 to Loc_enuSendCommState for the next Tick*/
 			Loc_enuSendCommState = Lcd_enuSendCommIdle;
@@ -547,23 +547,23 @@ extern void DisplayChar_Process(void)
 			 * 						Low En
 			 * 						High RS
 			 */
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_ON);
 
 
 			/*Send the data bit by bit on the bus*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D0_PIN].Lcd_Port, Lcd_Pins[LCD_D0_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D1_PIN].Lcd_Port, Lcd_Pins[LCD_D1_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D2_PIN].Lcd_Port, Lcd_Pins[LCD_D2_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D3_PIN].Lcd_Port, Lcd_Pins[LCD_D3_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
+			gpio_setPinValue(Lcd_Pins[LCD_D0_PIN].Lcd_Port, Lcd_Pins[LCD_D0_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
+			gpio_setPinValue(Lcd_Pins[LCD_D1_PIN].Lcd_Port, Lcd_Pins[LCD_D1_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
+			gpio_setPinValue(Lcd_Pins[LCD_D2_PIN].Lcd_Port, Lcd_Pins[LCD_D2_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
+			gpio_setPinValue(Lcd_Pins[LCD_D3_PIN].Lcd_Port, Lcd_Pins[LCD_D3_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
+			gpio_setPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
+			gpio_setPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
+			gpio_setPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
+			gpio_setPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
 
 			/*Send High Enable signal*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
 
 			/*Set Lcd_enuDisplayChar0 to Loc_enuDisplayCharState for the next Tick*/
 			Loc_enuDisplayCharState = Lcd_enuDisplayChar0;
@@ -574,7 +574,7 @@ extern void DisplayChar_Process(void)
 		case Lcd_enuDisplayChar0:
 		{
 		    /*Send a Low Enable signal to the LCD*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
 
 			/*Set Lcd_enuDisplayCharIdle to Loc_enuDisplayCharState for the next Tick*/
 			Loc_enuDisplayCharState = Lcd_enuDisplayCharIdle;
@@ -628,18 +628,18 @@ extern void SendCommand_Process(void)
 			 * 						Low En
 			 * 						High RS
 			 */
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_OFF);
 
 			/*Send the data bit by bit on the bus most nibble*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
+			gpio_setPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
+			gpio_setPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
+			gpio_setPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
+			gpio_setPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
 
 			/*Send High Enable signal*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
 
 			/*Set Lcd_enuSendComm0 to Loc_enuSendCommState for the next Tick*/
 			Loc_enuSendCommState = Lcd_enuSendComm0;
@@ -650,16 +650,16 @@ extern void SendCommand_Process(void)
 		case Lcd_enuSendComm0:
 		{
 			/*Send a Low Enable signal to the LCD*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
 
 			/*Send the data bit by bit on the bus least nibble*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
+			gpio_setPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
+			gpio_setPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
+			gpio_setPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
+			gpio_setPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
 
 			/*Send High Enable signal*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
 
 			/*Set Lcd_enuSendComm0 to Loc_enuSendCommState for the next Tick*/
 			Loc_enuSendCommState = Lcd_enuSendComm1;
@@ -670,7 +670,7 @@ extern void SendCommand_Process(void)
 		case Lcd_enuSendComm1:
 		{
 		    /*Send a Low Enable signal to the LCD*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
 
 			/*Set Lcd_enuSendComm0 to Loc_enuSendCommState for the next Tick*/
 			Loc_enuSendCommState = Lcd_enuSendCommIdle;
@@ -729,19 +729,19 @@ extern void DisplayChar_Process(void)
 			 * 						Low En
 			 * 						High RS
 			 */
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Port, Lcd_Pins[LCD_READ_WRITE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Port, Lcd_Pins[LCD_REGISTERSELECT_PIN].Lcd_Pin, LCD_ON);
 
 
 			/*Send the data bit by bit on the bus most nibble*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
+			gpio_setPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b4);
+			gpio_setPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b5);
+			gpio_setPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b6);
+			gpio_setPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b7);
 
 			/*Send High Enable signal*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
 
 			/*Set Lcd_enuDisplayChar0 to Loc_enuDisplayCharState for the next Tick*/
 			Loc_enuDisplayCharState = Lcd_enuDisplayChar0;
@@ -752,17 +752,17 @@ extern void DisplayChar_Process(void)
 		case Lcd_enuDisplayChar0:
 		{
 			/*Send a Low Enable signal to the LCD*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
 
 
 			/*Send the data bit by bit on the bus least nibble*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
+			gpio_setPinValue(Lcd_Pins[LCD_D4_PIN].Lcd_Port, Lcd_Pins[LCD_D4_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b0);
+			gpio_setPinValue(Lcd_Pins[LCD_D5_PIN].Lcd_Port, Lcd_Pins[LCD_D5_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b1);
+			gpio_setPinValue(Lcd_Pins[LCD_D6_PIN].Lcd_Port, Lcd_Pins[LCD_D6_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b2);
+			gpio_setPinValue(Lcd_Pins[LCD_D7_PIN].Lcd_Port, Lcd_Pins[LCD_D7_PIN].Lcd_Pin, Loc_union.Lcd_InBits.b3);
 
 			/*Send High Enable signal*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_ON);
 
 			/*Set Lcd_enuDisplayChar0 to Loc_enuDisplayCharState for the next Tick*/
 			Loc_enuDisplayCharState = Lcd_enuDisplayChar1;
@@ -773,7 +773,7 @@ extern void DisplayChar_Process(void)
 		case Lcd_enuDisplayChar1:
 		{
 		    /*Send a Low Enable signal to the LCD*/
-			Gpio_enuSetPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
+			gpio_setPinValue(Lcd_Pins[LCD_ENABLE_PIN].Lcd_Port, Lcd_Pins[LCD_ENABLE_PIN].Lcd_Pin, LCD_OFF);
 
 			/*Set Lcd_enuDisplayCharIdle to Loc_enuDisplayCharState for the next Tick*/
 			Loc_enuDisplayCharState = Lcd_enuDisplayCharIdle;

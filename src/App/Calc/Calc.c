@@ -32,31 +32,43 @@ static u8 CalcApp_u8Sign = 0;
 /* =================== Function Implementation ======================== */
 /* ==================================================================== */
 
+static void CalcApp_vidStartProcess();
+
+static void CalcApp_vidGetOperandOneProcess();
+
+static void CalcApp_vidGetOperandTwoProcess();
+
+CalcApp_enuErrorStatus CalcApp_CalcResult(void);
+
 void CalcApp_vidTask(){
 
-            
         
     switch(CalcApp_enuCurrentState){ 
     
         case CalcApp_enuStartState: 
-             CalcApp_vidStartProcess(Loc_enuErrorStatus);
+             CalcApp_vidStartProcess();
         break;
         
         case CalcApp_enuGetOperandOneState:
-             CalcApp_vidGetOperandOneProcess(Loc_enuErrorStatus);
+             CalcApp_vidGetOperandOneProcess();
         break;
         
         case CalcApp_enuGetOperandTwoState:
-             CalcApp_vidGetOperandTWOProcess(Loc_enuErrorStatus);
+             CalcApp_vidGetOperandTwoProcess();
         break;
 		case CalcApp_enuCalculateResultState: /*calculate the result */
         	CalcApp_ErrorState = CalcApp_CalcResult();
         break;
+
+		default:
+		{
+			break;
+		}
     }
     
 }
 
-static void CalcApp_Init(void) {
+void CalcApp_Init(void) {
 	CalcApp_strCurrInputData.CalcApp_strOperand1 = 0;
 	CalcApp_strCurrInputData.CalcApp_strOperand2 = 0;
 	CalcApp_strCurrInputData.CalcApp_strOperation = 0;
@@ -69,6 +81,8 @@ static void CalcApp_vidStartProcess(){
     
     Keypad_tenuErrorStatus Loc_enuErrorStatus = Keypad_enuNotOk;
     
+    u8 Loc_u8PressedValue;
+
     Loc_enuErrorStatus = Keypad_enuGetKey(&Loc_u8PressedValue);
     
     if(Loc_enuErrorStatus == Keypad_enuOk ){ 
@@ -77,7 +91,6 @@ static void CalcApp_vidStartProcess(){
         if(Loc_u8PressedValue >= '0' && Loc_u8PressedValue <= '9'){
             
             /* BUFFER THE OPERATION */
-            Loc_s16CurrOperand = Loc_u8PressedValue;
             CalcApp_strCurrInputData.CalcApp_strOperand1 = Loc_u8PressedValue; 
             
             CalcApp_enuCurrentState = CalcApp_enuDisplayOperandOneState;
@@ -99,6 +112,8 @@ static void CalcApp_vidGetOperandOneProcess(){
     
     Keypad_tenuErrorStatus Loc_enuErrorStatus = Keypad_enuNotOk;
     
+    u8 Loc_u8PressedValue;
+
     Loc_enuErrorStatus = Keypad_enuGetKey(&Loc_u8PressedValue);
     
     if(Loc_enuErrorStatus == Keypad_enuOk ){ 
@@ -140,6 +155,8 @@ static void CalcApp_vidGetOperandTwoProcess(){
     
     Keypad_tenuErrorStatus Loc_enuErrorStatus = Keypad_enuNotOk;
     
+    u8 Loc_u8PressedValue;
+
     Loc_enuErrorStatus = Keypad_enuGetKey(&Loc_u8PressedValue);
     
     if(Loc_enuErrorStatus == Keypad_enuOk ){ 

@@ -6,14 +6,14 @@
  */
 
 
-#include "../Lib/Std_types.h"
-#include "../Lib/Bit_utils.h"
-#include "../Gpio/Gpio.h"
-#include "../Sched/Sched.h"
-#include "../Sched/Sched_cfg.h"
-#include "../Lcd/Lcd.h"
-#include "../Lcd/Lcd_prv.h"
-#include "../Lcd/Lcd_cfg.h"
+#include "../../Lib/Std_types.h"
+#include "../../Lib/Bit_utils.h"
+#include "../../Mcal/Gpio/Gpio.h"
+#include "../../Services/Sched/Sched.h"
+#include "../../Services/Sched/Sched_cfg.h"
+#include "Lcd.h"
+#include "Lcd_prv.h"
+#include "Lcd_cfg.h"
 
 
 /*Extern the LCD Pins*/
@@ -55,7 +55,7 @@ extern void Lcd_vidInit(void)
 	u8 Loc_u8ForCounter = ZERO;
 
 	/*Loc_Pincfg is used to initialize the LCD pins*/
-	Gpio_Pincfg_t Loc_Pincfg;
+	gpioPinCfg_t Loc_Pincfg;
 
 	/*Set the periodic time of the LCD task to two*/
 	Loc_run.CyclicTimems = LCDTASKPERIODICTIME;
@@ -73,18 +73,18 @@ extern void Lcd_vidInit(void)
 	for(Loc_u8ForCounter = LCD_PINS; Loc_u8ForCounter > 0; Loc_u8ForCounter--)
 	{
 		/*Set the mode of the pin to general output push pull*/
-		Loc_Pincfg.Gpio_Mode = Gpio_Mode_Out_GP_PP;
+		Loc_Pincfg.mode = GPIO_PIN_OUT_PP;
 
 		/*Set the speed of the pin to high*/
-		Loc_Pincfg.Gpio_Speed = Gpio_Speed_High;
+		Loc_Pincfg.speed = GPIO_PIN_SPEED2;
 
 		/*Set the pin number from the constant array*/
-		Loc_Pincfg.Gpio_Pin = Lcd_Pins[Loc_u8ForCounter - ONE].Lcd_Pin;
+		Loc_Pincfg.pin = Lcd_Pins[Loc_u8ForCounter - ONE].Lcd_Pin;
 
 		/*Set the port number from the constant array*/
-		Loc_Pincfg.Gpio_Port = Lcd_Pins[Loc_u8ForCounter - ONE].Lcd_Port;
+		Loc_Pincfg.port = Lcd_Pins[Loc_u8ForCounter - ONE].Lcd_Port;
 
-		Gpio_enuInit(&Loc_Pincfg);
+		gpio_initPin(&Loc_Pincfg);
 	}
 }
 

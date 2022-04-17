@@ -51,16 +51,16 @@ extern void Keypad_Task(void)
 	u8 Loc_u8ForItreatorCols = ZERO;
 
 	/*Loc_enuGpioErrorStatus is used to make sure the Gpio is done his job*/
-	Gpio_tenuErrorStatus Loc_enuGpioErrorStatus = Gpio_enuOk;
+	gpioErrorStatus_t Loc_enuGpioErrorStatus = gpio_enuOk;
 
 	/*Loop over the rows set one by one to zero and read the columns*/
 	for(Loc_u8ForItreatorRows = 0; Loc_u8ForItreatorRows < NUM_ROWS; Loc_u8ForItreatorRows++)
 	{
 		/*Set row number iterator to zero.*/
-		Loc_enuGpioErrorStatus = Gpio_enuSetPinValue(Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Port, Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Pin, Gpio_Pin_Value_Off);
+		Loc_enuGpioErrorStatus = gpio_setPinValue(Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Port, Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Pin, GPIO_LOW);
 
 		/*Check the return of the Gpio function*/
-		if(Loc_enuGpioErrorStatus == Gpio_enuOk)
+		if(Loc_enuGpioErrorStatus == gpio_enuOk)
 		{
 			/*Do Nothing*/
 		}/*end of if(Loc_enuGpioErrorStatus == Gpio_enuOk)*/
@@ -75,10 +75,10 @@ extern void Keypad_Task(void)
 		for(Loc_u8ForItreatorCols = 0; Loc_u8ForItreatorCols < NUM_COLS; Loc_u8ForItreatorCols++)
 		{
 			/*Read the columns one by one to check if any is pressed*/
-			Loc_enuGpioErrorStatus = Gpio_enuGetPinValue(Keypad_Pins[Loc_u8ForItreatorCols + NUM_ROWS].Keypad_Port, Keypad_Pins[Loc_u8ForItreatorCols + NUM_ROWS].Keypad_Pin, &currentVal);
+			Loc_enuGpioErrorStatus = gpio_getPinValue(Keypad_Pins[Loc_u8ForItreatorCols + NUM_ROWS].Keypad_Port, Keypad_Pins[Loc_u8ForItreatorCols + NUM_ROWS].Keypad_Pin, &currentVal);
 
 			/*Check the return of the Gpio function*/
-			if(Loc_enuGpioErrorStatus == Gpio_enuOk)
+			if(Loc_enuGpioErrorStatus == gpio_enuOk)
 			{
 				/*Do Nothing*/
 			}/*end of if(Loc_enuGpioErrorStatus == Gpio_enuOk)*/
@@ -107,7 +107,7 @@ extern void Keypad_Task(void)
 				KeysState[Loc_u8ForItreatorRows][Loc_u8ForItreatorCols] = currentVal;
 
 				/*Check if the current state is zero which means pressed save it in the flags*/
-				if(currentVal == Gpio_Pin_Value_Off)
+				if(currentVal == GPIO_LOW)
 				{
 					/*Raise the flag of a key is pressed.*/
 					Keypad_u8PressedAvaliable = ONE;
@@ -133,10 +133,10 @@ extern void Keypad_Task(void)
 		}/*for(Loc_u8ForItreatorCols = 0; Loc_u8ForItreatorCols < NUM_COLS; Loc_u8ForItreatorCols++)*/
 
 		/*Set the row back to one to disable this row*/
-		Loc_enuGpioErrorStatus = Gpio_enuSetPinValue(Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Port, Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Pin, Gpio_Pin_Value_On);
+		Loc_enuGpioErrorStatus = gpio_setPinValue(Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Port, Keypad_Pins[Loc_u8ForItreatorRows].Keypad_Pin, GPIO_HIGH);
 
 		/*Check the return of the Gpio function*/
-		if(Loc_enuGpioErrorStatus == Gpio_enuOk)
+		if(Loc_enuGpioErrorStatus == gpio_enuOk)
 		{
 			/*Do Nothing*/
 		}/*end of if(Loc_enuGpioErrorStatus == Gpio_enuOk)*/

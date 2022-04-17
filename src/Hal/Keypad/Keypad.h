@@ -16,7 +16,7 @@
 typedef enum
 {
 	Keypad_enuOk,
-	Keypad_enunNotOk,
+	Keypad_enuNotOk,
 	Keypad_enuNullPointer,
 }Keypad_tenuErrorStatus;
 

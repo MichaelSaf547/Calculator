@@ -37,10 +37,10 @@ extern Keypad_tenuErrorStatus Keypad_enuInit()
 	u8 Loc_u8ForCounter = ZERO;
 
 	/*Loc_enuGpioConfig is used to configure the pins of the keypad*/
-	Gpio_Pincfg_t Loc_enuGpioConfig;
+	gpioPinCfg_t Loc_enuGpioConfig;
 
 	/*Loc_enuGpioErrorStatus is used to check the initialization of the pins.*/
-	Gpio_tenuErrorStatus Loc_enuGpioErrorStatus = Gpio_enuOk;
+	gpioErrorStatus_t Loc_enuGpioErrorStatus = gpio_enuOk;
 
 	/*Loc_KeypadRunnable is used to set the Keypad task into the scheduler.*/
 	Runnable_t Loc_KeypadRunnable;
@@ -50,20 +50,20 @@ extern Keypad_tenuErrorStatus Keypad_enuInit()
 	for(Loc_u8ForCounter = ZERO; Loc_u8ForCounter < NUM_ROWS; Loc_u8ForCounter++)
 	{
 		/*Set the row pins to be output with high speed*/
-		Loc_enuGpioConfig.Gpio_Mode = Gpio_Mode_Out_GP_PP;
-		Loc_enuGpioConfig.Gpio_Speed = Gpio_Speed_High;
+		Loc_enuGpioConfig.mode = GPIO_PIN_OUT_PP;
+		Loc_enuGpioConfig.speed = GPIO_PIN_SPEED2;
 
-		Loc_enuGpioConfig.Gpio_Port = Keypad_Pins[Loc_u8ForCounter].Keypad_Port;
-		Loc_enuGpioConfig.Gpio_Pin = Keypad_Pins[Loc_u8ForCounter].Keypad_Pin;
+		Loc_enuGpioConfig.port = Keypad_Pins[Loc_u8ForCounter].Keypad_Port;
+		Loc_enuGpioConfig.pin = Keypad_Pins[Loc_u8ForCounter].Keypad_Pin;
 
 		/*Initialize the pin*/
-		Loc_enuGpioErrorStatus = Gpio_enuInit(&Loc_enuGpioConfig);
+		Loc_enuGpioErrorStatus = gpio_initPin(&Loc_enuGpioConfig);
 
 		/*Check the error status of the gpio_init function*/
-		if(Loc_enuGpioErrorStatus != Gpio_enuOk)
+		if(Loc_enuGpioErrorStatus != gpio_enuOk)
 		{
-			/*Set Keypad_enunNotOk to Loc_enuReturnStatus as the the function called initialize the pin.*/
-			Loc_enuReturnStatus = Keypad_enunNotOk;
+			/*Set Keypad_enuNotOk to Loc_enuReturnStatus as the the function called initialize the pin.*/
+			Loc_enuReturnStatus = Keypad_enuNotOk;
 		}/*end of if(Loc_enuGpioErrorStatus != Gpio_enuOk)*/
 		else
 		{
@@ -77,20 +77,20 @@ extern Keypad_tenuErrorStatus Keypad_enuInit()
 	for(Loc_u8ForCounter = NUM_ROWS; Loc_u8ForCounter < (NUM_COLS + NUM_ROWS); Loc_u8ForCounter++)
 	{
 		/*Set the row pins to be input pull up with high speed*/
-		Loc_enuGpioConfig.Gpio_Mode = Gpio_Mode_In_PU;
-		Loc_enuGpioConfig.Gpio_Speed = Gpio_Speed_High;
+		Loc_enuGpioConfig.mode = GPIO_PIN_IN_PU;
+		Loc_enuGpioConfig.speed = GPIO_PIN_SPEED2;
 
-		Loc_enuGpioConfig.Gpio_Port = Keypad_Pins[Loc_u8ForCounter].Keypad_Port;
-		Loc_enuGpioConfig.Gpio_Pin = Keypad_Pins[Loc_u8ForCounter].Keypad_Pin;
+		Loc_enuGpioConfig.port = Keypad_Pins[Loc_u8ForCounter].Keypad_Port;
+		Loc_enuGpioConfig.pin = Keypad_Pins[Loc_u8ForCounter].Keypad_Pin;
 
 		/*Initialize the pin*/
-		Loc_enuGpioErrorStatus = Gpio_enuInit(&Loc_enuGpioConfig);
+		Loc_enuGpioErrorStatus = gpio_initPin(&Loc_enuGpioConfig);
 
 		/*Check the error status of the gpio_init function*/
-		if(Loc_enuGpioErrorStatus != Gpio_enuOk)
+		if(Loc_enuGpioErrorStatus != gpio_enuOk)
 		{
-			/*Set Keypad_enunNotOk to Loc_enuReturnStatus as the the function called initialize the pin.*/
-			Loc_enuReturnStatus = Keypad_enunNotOk;
+			/*Set Keypad_enuNotOk to Loc_enuReturnStatus as the the function called initialize the pin.*/
+			Loc_enuReturnStatus = Keypad_enuNotOk;
 		}/*end of if(Loc_enuGpioErrorStatus != Gpio_enuOk)*/
 		else
 		{
@@ -141,8 +141,8 @@ extern Keypad_tenuErrorStatus Keypad_enuGetKey(pu8 Add_pu8PressedKey)
 	}/*end of if(Keypad_u8PressedAvaliable == ONE)*/
 	else
 	{
-		/*Set Keypad_enunNotOk to Loc_enuReturnStatus as now key has been pressed.*/
-		Loc_enuReturnStatus = Keypad_enunNotOk;
+		/*Set s to Loc_enuReturnStatus as now key has been pressed.*/
+		Loc_enuReturnStatus = Keypad_enuNotOk;
 
 	}/*end of else of if(Keypad_u8PressedAvaliable == ONE)*/
 

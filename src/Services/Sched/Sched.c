@@ -31,20 +31,20 @@ Runnable_t RunnableList[RUNNABLELISTLENGTH];
 extern void Sched_vidInit()
 {
 	/*Initialize the system timer*/
-	Systick_enuInit();
+	Systick_Init();
 
 	/*Set the time for the timer in ms*/
-	Systick_enuSetTimeMs(TICK_MS);
+	Systick_SetTickTime_ms(TICK_MS);
 
 	/*Set the Sched function as the call back function to be called every time the timer finish*/
-	Systick_enuRegisterCBF(Sched);
+	Systick_Register_cbf(Sched);
 }
 
 
 extern void Sched_vidStart()
 {
 	/*Start the System timer*/
-	Systick_enuStart();
+	Systick_Start();
 
 	/*While to hold the processor waiting for the next interrupt of system timer*/
 	while(1);

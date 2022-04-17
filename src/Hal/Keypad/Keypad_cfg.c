@@ -18,50 +18,50 @@ const Keypad_cfg_t Keypad_Pins[NUM_COLS + NUM_ROWS] =
 	   {
 			   [KEYPAD_ROW0] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_0
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN0
 			   },
 
 			   [KEYPAD_ROW1] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_1
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN1
 			   },
 
 			   [KEYPAD_ROW2] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_2
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN2
 			   },
 
 			   [KEYPAD_ROW3] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_3
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN3
 			   },
 
 			   [KEYPAD_COL0] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_4
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN4
 			   },
 
 			   [KEYPAD_COL1] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_5
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN5
 			   },
 
 			   [KEYPAD_COL2] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_6
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN6
 			   },
 
 			   [KEYPAD_COL3] =
 			   {
-					   .Keypad_Port = Gpio_Port_B,
-					   .Keypad_Pin = Gpio_Pin_7
+					   .Keypad_Port = GPIO_PORTB,
+					   .Keypad_Pin = GPIO_PIN7
 			   },
 	   };
 
