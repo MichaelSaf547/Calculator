@@ -11,13 +11,13 @@
 #include "Rcc.h"
 #include "Rcc_prv.h"
 
-/* ==================================================================================== */
-/* ============================== RCC_enuSelectClk ==================================== */
-/* @description :  select the clock of the system ======================================*/
-/* @param       :        Copy_enuClk (RCC_CLK)             : RCC_HSI, RCC_HSE, RCC_PLL--*/
-/* @return      :  error, choosing a wrong clock, or the clock isn't ready or on ,    --*/
-/*                 or failed to set the clock as a system clock ------------------------*/                                                                             *
-/* ==================================================================================== */
+
+/****************************** Select CLOCK *******************************************
+* @description  :  select the clock of the system -------------------------------------*
+* @param       :        Copy_enuClk (RCC_CLK)             : RCC_HSI, RCC_HSE, RCC_PLL--*
+* @return      :  error, choosing a wrong clock, or the clock isn't ready or on ,    --*
+*                 or failed to set the clock as a system clock ------------------------*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuSelectClk(u8 Copy_u8ClockSystem){
   RCC_enuErrorStatus Ret_enuSystemCLOCK = RCC_enuOK;
   u32 Loc_u32CFGR_Register;
@@ -64,7 +64,6 @@ RCC_enuErrorStatus  RCC_enuSelectClk(u8 Copy_u8ClockSystem){
             break;
         }
         case RCC_HSE:
-        
         /* CHECK ON */
         if((RCC_CR & MASK_HSE_ON) == MASK_HSE_ON){
 
@@ -86,13 +85,11 @@ RCC_enuErrorStatus  RCC_enuSelectClk(u8 Copy_u8ClockSystem){
               Ret_enuSystemCLOCK = RCC_enuNotOK;
             }
           }
-          
           /* ERROR : NOT READY */
           else{
             Ret_enuSystemCLOCK = RCC_enuNotOK;
           }
         }
-        
         /* CLOCK OFF */
         else{
           Ret_enuSystemCLOCK = RCC_enuNotOK;
@@ -101,7 +98,6 @@ RCC_enuErrorStatus  RCC_enuSelectClk(u8 Copy_u8ClockSystem){
       break;
 
       case RCC_PLL:
-      
         /* CHECK ON */
         if((RCC_CR & MASK_PLL_ON) == MASK_PLL_ON){
 
@@ -149,15 +145,12 @@ RCC_enuErrorStatus  RCC_enuSelectClk(u8 Copy_u8ClockSystem){
   return Ret_enuSystemCLOCK;
 }
 
-
-/* ==================================================================================== */
-/* ============================== RCC_enuControlClk =================================== */
-/* @description : control the clock on/off =============================================*/
-/* @param       :        Copy_enuClk (RCC_CLK)               : RCC_HSI, RCC_HSE, RCC_PLL*/
-/*                       Copy_enuClkStatus (RCC_enuClkStatus): ON, OFF                  */
-/* @return      :  error, choosing a wrong clock, or the clock isn't ready or on ,      */
-/*                 or failed to set the clock as a system clock ------------------------*/                                                                             *
-/* ==================================================================================== */
+/******************************* Control CLOCK  ****************************************
+* @description :  control the clock on/off  -------------------------------------------*
+* @param :        Copy_enuClk (RCC_CLK)                : RCC_HSI, RCC_HSE, RCC_PLL-----*
+*                 Copy_enuClkStatus (RCC_enuClkStatus) : ON, OFF  ---------------------*
+* @return         error, if changing the system clock, or choosing a wrong clock  -----*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuControlClk(u8 Copy_u8ClockSystem,RCC_enuClkStatus Copy_enuClkStatus){
   u32 Loc_u32SystemCLOCK = ((RCC_CFGR & MASK_GET_SYSCLK)>>2);
   RCC_enuErrorStatus Ret_enuSystemCLOCK = RCC_enuOK;
@@ -255,14 +248,13 @@ RCC_enuErrorStatus  RCC_enuControlClk(u8 Copy_u8ClockSystem,RCC_enuClkStatus Cop
   return Ret_enuSystemCLOCK;
 }
 
-/* ==================================================================================== */
-/* ============================== RCC_enuCheckReady =================================== */
-/* @description : check the clock ready/not ready ======================================*/
-/* @param       :        Copy_enuClk (RCC_CLK)               : RCC_HSI, RCC_HSE, RCC_PLL*/
-/*                       Add_enuReadyStatus (RCC_enuReadyStatus) ====================== */
-/* @return      :  error, choosing a wrong clock, or the clock isn't ready or on ,      */
-/*                 or failed to set the clock as a system clock ------------------------*/                                                                             *
-/* ==================================================================================== */
+
+/****************************** Check Ready ********************************************
+* @description :  check the clock ready/not ready -------------------------------------*
+* @param  :       Copy_enuClk (RCC_CLK)                 RCC_HSI, RCC_HSE, RCC_PLL------*
+*                 Add_enuReadyStatus (RCC_enuReadyStatus) : Address to get the status -*
+* @return :       error, if changing the system clock, or choosing a wrong clock  -----*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuCheckReady(u8 Copy_u8ClockSystem, u8* Add_pu8ReadyStatus){
   RCC_enuErrorStatus Ret_enuSystemCLOCK = RCC_enuOK;
 
@@ -312,17 +304,17 @@ RCC_enuErrorStatus  RCC_enuCheckReady(u8 Copy_u8ClockSystem, u8* Add_pu8ReadySta
   return Ret_enuSystemCLOCK;
 }
 
-/* ==================================================================================== */
-/* ============================== RCC_enuConfigPLL ==================================== */
-/* @description : Configure the PLL configuration parameters ===========================*/
-/* @param       : RCC_enuPLLSCR : HSI, HSE.                                             */                        */
-/*                RCC_enuPLL_M : 2 : 63                                                 */
-/*                RCC_enuPLL_N : 2 : 511                                                */
-/*                RCC_enuPLL_P : 2,4,6,8                                                */
-/*                RCC_enuPLL_Q : 2 : 15                                                 */
-/* @return      :  error, choosing a wrong clock, or the clock isn't ready or on ,      */
-/*                 or failed to set the clock as a system clock ------------------------*/                                                                             *
-/* ==================================================================================== */
+/****************************** Configure PLL ******************************************
+* @description :  Configure the PLL configuration parameters --------------------------*
+* @param :        Copy_structPLLCongif (RCC_structCLKPLL): struct, --------------------*
+*                           RCC_enuPLLSCR : HSI, HSE.
+*                           RCC_enuPLL_M : 2 : 63
+*                           RCC_enuPLL_N : 2 : 511
+*                           RCC_enuPLL_P : 2,4,6,8
+*                           RCC_enuPLL_Q : 2 : 15
+*
+* @return  : checking M,N,P,Q parameters, or if the PLL is ON, or selecting wrong clock*
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuConfigPLL(RCC_structCLKPLL Copy_structPLLCongif){
 
   RCC_enuErrorStatus Loc_enuerrorstatusPLL = RCC_enuOK;
@@ -402,13 +394,11 @@ RCC_enuErrorStatus  RCC_enuConfigPLL(RCC_structCLKPLL Copy_structPLLCongif){
   return Loc_enuerrorstatusPLL;
 }
 
-
-/* ==================================================================================== */
-/* ============================== RCC_enuControlPrescalerAHB ========================== */
-/* @description : Configure the AHB prescaler ==========================================*/
-/* @param       : Copy_u32AHBPrescaler (u32)  : 0,2,4,8,16,64,128,254,512               */
-/* @return      : error, you have a wrong choice                                        */                                                                             *
-/* ==================================================================================== */
+/************************************ Configure AHB ************************************
+* @description :  Configure the AHB prescaler  ----------------------------------------*
+* @param :        Copy_u32AHBPrescaler (u32)  : 0,2,4,8,16,64,128,254,512       -------*
+* @return         error, you have a wrong choice --------------------------------------*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuControlPrescalerAHB(u32 Copy_u32AHBPrescaler){
 
   RCC_enuErrorStatus Ret_enuErrorStatus = RCC_enuOK;
@@ -498,13 +488,11 @@ RCC_enuErrorStatus  RCC_enuControlPrescalerAHB(u32 Copy_u32AHBPrescaler){
   return Ret_enuErrorStatus;
 }
 
-
-/* ==================================================================================== */
-/* ============================== RCC_enuControlPrescalerAPB1 ========================= */
-/* @description : Configure the APB1 prescaler =========================================*/
-/* @param       : Copy_u32AHBPrescaler (u32)  : 0,2,4,8,16                              */
-/* @return      : error, you have a wrong choice                                        */                                                                             *
-/* ==================================================================================== */
+/****************************** Configure APB1 *****************************************
+* @description :  Configure the APB1 prescaler  ---------------------------------------*
+* @param :        Copy_u32AHBPrescaler (u32)  : 0,2,4,8,16       ----------------------*
+* @return         error, you have a wrong choice --------------------------------------*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuControlPrescalerAPB1(u32 Copy_u32APB1Prescaler){
   RCC_enuErrorStatus Ret_enuErrorStatus = RCC_enuOK;
   u32 Loc_u32CFGR_Register;
@@ -560,13 +548,11 @@ RCC_enuErrorStatus  RCC_enuControlPrescalerAPB1(u32 Copy_u32APB1Prescaler){
   return Ret_enuErrorStatus;
 }
 
-
-/* ==================================================================================== */
-/* ============================== RCC_enuControlPrescalerAPB2 ========================= */
-/* @description : Configure the APB2 prescaler =========================================*/
-/* @param       : Copy_u32AHBPrescaler (u32)  : 0,2,4,8,16                              */
-/* @return      : error, you have a wrong choice                                        */                                                                             *
-/* ==================================================================================== */
+/****************************** Configure APB2 *****************************************
+* @description :  Configure the APB2 prescaler  ---------------------------------------*
+* @param :        Copy_u32AHBPrescaler (u32)  : 0,2,4,8,16       ----------------------*
+* @return         error, you have a wrong choice --------------------------------------*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuControlPrescalerAPB2(u32 Copy_u32APB2Prescaler){
   RCC_enuErrorStatus Ret_enuErrorStatus = RCC_enuOK;
   u32 Loc_u32CFGR_Register;
@@ -622,14 +608,18 @@ RCC_enuErrorStatus  RCC_enuControlPrescalerAPB2(u32 Copy_u32APB2Prescaler){
   return Ret_enuErrorStatus;
 }
 
-
-/* ==================================================================================== */
-/* ============================== RCC_enuEnablePreipheral ============================= */
-/* @description : Enable the prepherial on the selected bridge =========================*/
-/* @param       : Copy_u32PeripheralBus (u32)  : AHB1_BUS, AHB2_BUS, APB1_BUS, APB2_BUS */
-/*              : Copy_u32Peripheral (u32)                                              */
-/* @return      : error, you have a wrong choice of the bus                             */                                                                             *
-/* ==================================================================================== */
+/****************************** Enable Peripheral **************************************
+* @description :  Enable the prepherial on the selected bridge ------------------------*
+* @param :        Copy_u32PeripheralBus (u32)  : AHB1,AHB2,APB1,APB2       ------------*
+*                 Copy_u32Peripheral (u32): prepherials   -----------------------------*
+*                   AHB1 : GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOH, CRC, DMA1, DMA2 --*
+*                   AHB2 : OTGFS ------------------------------------------------------*
+*                   APB1 : TIM2, TIM3, TIM4, TIM5, WWDG, SPI2, SPI3, USART2, I2C1,-----*
+*                          I2C2,I2C3, PWR         -------------------------------------*
+*                   APB2 : TIM1, USART1, USART6, ADC1, SDIO, SPI1, SPI4, SYSCFG,  -----*
+*                          TIM9, TIM10, TIM11 -----------------------------------------*
+* @return         error, you have a wrong choice of the bus ---------------------------*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuEnablePreipheral(u32 Copy_u32PeripheralBus, u32 Copy_u32Peripheral){
 
   RCC_enuErrorStatus Ret_enuErrorStatus = RCC_enuOK;
@@ -664,13 +654,18 @@ RCC_enuErrorStatus  RCC_enuEnablePreipheral(u32 Copy_u32PeripheralBus, u32 Copy_
   return Ret_enuErrorStatus;
 }
 
-/* ==================================================================================== */
-/* ============================== RCC_enuDisablePreipheral ============================ */
-/* @description : Disable the Prepherial on the selected bridge ========================*/
-/* @param       : Copy_u32PeripheralBus (u32)  : AHB1_BUS, AHB2_BUS, APB1_BUS, APB2_BUS */
-/*              : Copy_u32Peripheral (u32)                                              */
-/* @return      : error, you have a wrong choice of the bus                             */                                                                             *
-/* ==================================================================================== */
+/****************************** Disable Peripheral *************************************
+* @description :  Disable the Prepherial on the selected bridge ------------------------*
+* @param :        Copy_u32PeripheralBus (u32)  : AHB1,AHB2,APB1,APB2       ------------*
+*                 Copy_u32Peripheral (u32): prepherials   -----------------------------*
+*                   AHB1 : GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOH, CRC, DMA1, DMA2 --*
+*                   AHB2 : OTGFS ------------------------------------------------------*
+*                   APB1 : TIM2, TIM3, TIM4, TIM5, WWDG, SPI2, SPI3, USART2, I2C1,-----*
+*                          I2C2,I2C3, PWR         -------------------------------------*
+*                   APB2 : TIM1, USART1, USART6, ADC1, SDIO, SPI1, SPI4, SYSCFG,  -----*
+*                          TIM9, TIM10, TIM11 -----------------------------------------*
+* @return         error, you have a wrong choice of the bus ---------------------------*                                                                             *
+****************************************************************************************/
 RCC_enuErrorStatus  RCC_enuDisablePreipheral(u32 Copy_u32PeripheralBus, u32 Copy_u32Peripheral){
 
   RCC_enuErrorStatus Ret_enuErrorStatus = RCC_enuOK;
