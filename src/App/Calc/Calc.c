@@ -24,6 +24,7 @@
 CalcApp_enuOperandState CalcApp_enuCurrentState = CalcApp_enuStartState;
 CalcApp_strInputData    CalcApp_strCurrInputData;
 CalcApp_strOutputData   CalcApp_strCurrOutputData;
+CalcApp_enuErrorStatus  CalcApp_ErrorState = CalcApp_OK;
 
 static u8 CalcApp_u8Sign = 0;
 
@@ -48,8 +49,20 @@ void CalcApp_vidTask(){
         case CalcApp_enuGetOperandTwoState:
              CalcApp_vidGetOperandTWOProcess(Loc_enuErrorStatus);
         break;
+		case CalcApp_enuCalculateResultState: /*calculate the result */
+        	CalcApp_ErrorState = CalcApp_CalcResult();
+        break;
     }
     
+}
+
+static void CalcApp_Init(void) {
+	CalcApp_strCurrInputData.CalcApp_strOperand1 = 0;
+	CalcApp_strCurrInputData.CalcApp_strOperand2 = 0;
+	CalcApp_strCurrInputData.CalcApp_strOperation = 0;
+	CalcApp_strCurrOutputData.CalcApp_strResult = 0;
+	CalcApp_strCurrOutputData.CalcApp_strFloatNumFlag =
+			CALC_APP_FLOAT_NUM_FLAG_NEXSIT;
 }
 
 static void CalcApp_vidStartProcess(){
@@ -177,3 +190,64 @@ static void CalcApp_vidGetOperandTwoProcess(){
 
 
 
+/*
+ * Name:  CalcApp_CalcResult
+ *
+ * InputArguments: None
+ *
+ * Return Value: CalcApp_enuErrorStatus - return enumeration of the error status
+ *
+ * Description: calculate the result according to selected operation
+ *
+ */
+CalcApp_enuErrorStatus CalcApp_CalcResult(void) {
+
+	CalcApp_enuErrorStatus ErrorStatus = CalcApp_OK;
+	/*
+	 * check the operation type
+	 */
+	switch (CalcApp_strCurrInputData.CalcApp_strOperation) {
+	case '+':
+		CalcApp_strCurrOutputData.CalcApp_strResult =
+				CalcApp_strCurrInputData.CalcApp_strOperand1
+						+ CalcApp_strCurrInputData.CalcApp_strOperand2;
+		break;
+	case '-':
+		CalcApp_strCurrOutputData.CalcApp_strResult =
+				CalcApp_strCurrInputData.CalcApp_strOperand1
+						- CalcApp_strCurrInputData.CalcApp_strOperand2;
+		break;
+	case '*':
+		CalcApp_strCurrOutputData.CalcApp_strResult =
+				CalcApp_strCurrInputData.CalcApp_strOperand1
+						* CalcApp_strCurrInputData.CalcApp_strOperand2;
+
+		break;
+
+	case '/':
+
+		if (CalcApp_strCurrInputData.CalcApp_strOperand2 != 0) {
+
+			CalcApp_strCurrOutputData.CalcApp_strResult =
+					(CalcApp_strCurrInputData.CalcApp_strOperand1 * 10000)
+							/ CalcApp_strCurrInputData.CalcApp_strOperand2;
+			CalcApp_strCurrOutputData.CalcApp_strFloatNumFlag =
+					CALC_APP_FLOAT_NUM_FLAG_EXIST;
+		} else {
+			ErrorStatus = CalcApp_NOK_DivByZero;
+		}
+		break;
+	default:
+
+		ErrorStatus = CalcApp_NOK;
+		break;
+	}
+
+	/*
+	 * set state to the next state to display results
+	 */
+
+		CalcApp_enuCurrentState = CalcApp_enuDisplayResultState;
+
+	return ErrorStatus;
+}

@@ -20,7 +20,8 @@ typedef struct{
 }CalcApp_strInputData;
 
 typedef struct{
-    
+
+    u8 CalcApp_strFloatNumFlag; /*flag set to 1 to detect if result is float*/
     s64 CalcApp_strResult;
     
 }CalcApp_strOutputData;
@@ -40,6 +41,12 @@ typedef enum{
     
 }CalcApp_enuOperandState;
 
+/*
+ *enumeration to define error status of each function
+ */
+typedef enum {
+	CalcApp_OK, CalcApp_NOK, CalcApp_NOK_DivByZero, CalcApp_NOK_ResultOverflow
+} CalcApp_enuErrorStatus;
 
 /* ==================================================================== */
 /* ===================== Function Prototypes ========================== */
