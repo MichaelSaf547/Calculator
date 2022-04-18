@@ -46,6 +46,8 @@ static void CalcApp_vidDisplayOperandTwoProcess();
 
 CalcApp_enuErrorStatus CalcApp_CalcResult(void);
 
+void CalcApp_vidDisplayResultProcess(void);
+
 void CalcApp_vidTask(){
 
         
@@ -77,6 +79,10 @@ void CalcApp_vidTask(){
 
 		case CalcApp_enuCalculateResultState: /*calculate the result */
         	CalcApp_ErrorState = CalcApp_CalcResult();
+        	break;
+
+		case CalcApp_enuDisplayResultState:
+			CalcApp_vidDisplayResultProcess();
         break;
 
 		default:
@@ -104,8 +110,8 @@ void CalcApp_Init(void) {
 	
     Runnable_t Loc_runnable;
 	Loc_runnable.CyclicTimems = 100;
-	Loc_run.cbfP = CalcApp_vidTask;
-	Sched_RegisterRunnable(&Loc_run, 2);
+	Loc_runnable.cbfP = CalcApp_vidTask;
+	Sched_RegisterRunnable(&Loc_runnable, 2);
     
     Sched_vidInit();	
 	Sched_vidStart();
@@ -126,7 +132,7 @@ static void CalcApp_vidStartProcess(){
         if(Loc_u8PressedValue >= '0' && Loc_u8PressedValue <= '9'){
             
             /* BUFFER THE OPERATION */
-            CalcApp_strCurrInputData.CalcApp_strOperand1 = Loc_u8PressedValue; 
+            CalcApp_strCurrInputData.CalcApp_strOperand1 = Loc_u8PressedValue  - '0';
             
             CalcApp_enuCurrentState = CalcApp_enuDisplayOperandOneState;
         }
@@ -159,12 +165,12 @@ static void CalcApp_vidGetOperandOneProcess(){
             
             /* MINUS OPERATION */ 
             if(CalcApp_u8Sign == 1){
-                CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Loc_u8PressedValue) * -1;  
+                CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Loc_u8PressedValue - '0') * -1;
                 CalcApp_u8Sign = 0;
             }
             
             else{
-                CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Loc_u8PressedValue);  
+                CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Loc_u8PressedValue - '0');
             }
             
             /* CHANGE THE CURRENT STATE */ 
@@ -213,7 +219,7 @@ static void CalcApp_vidDisplayOperandOneProcess()
 			: (u8)((CalcApp_strCurrInputData.CalcApp_strOperand1) % 10);
 
 	/* display one digit of operand one */
-	Lcd_vidDisplayCharacter(Loc_u8Temp);
+	Lcd_vidDisplayCharacter(Loc_u8Temp + '0');
 
 	/* update current state */
 	CalcApp_enuCurrentState = CalcApp_enuGetOperandOneState;
@@ -243,12 +249,12 @@ static void CalcApp_vidGetOperandTwoProcess(){
             
             /* MINUS OPERATION */ 
             if(CalcApp_u8Sign == 1){
-                CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Loc_u8PressedValue) * -1;  
+                CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Loc_u8PressedValue - '0') * -1;
                 CalcApp_u8Sign = 0;
             }
             
             else{
-                CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Loc_u8PressedValue);  
+                CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Loc_u8PressedValue - '0');
             }
             
             /* CHANGE THE CURRENT STATE */ 
@@ -308,10 +314,10 @@ static void CalcApp_vidDisplayOperandTwoProcess()
 			: (u8)((CalcApp_strCurrInputData.CalcApp_strOperand2) % 10);
 
 	/* display one digit of operand two */
-	Lcd_vidDisplayCharacter(Loc_u8Temp);
+	Lcd_vidDisplayCharacter(Loc_u8Temp + '0');
 
 	/* update current state */
-	CalcApp_enuCurrentState = CalcApp_enuDone;
+	CalcApp_enuCurrentState = CalcApp_enuGetOperandTwoState;
 }
 
 /*
@@ -353,7 +359,7 @@ CalcApp_enuErrorStatus CalcApp_CalcResult(void) {
 		if (CalcApp_strCurrInputData.CalcApp_strOperand2 != 0) {
 
 			CalcApp_strCurrOutputData.CalcApp_strResult =
-					(CalcApp_strCurrInputData.CalcApp_strOperand1 * 10000)
+					(CalcApp_strCurrInputData.CalcApp_strOperand1 * 1000)
 							/ CalcApp_strCurrInputData.CalcApp_strOperand2;
 			CalcApp_strCurrOutputData.CalcApp_strFloatNumFlag =
 					CALC_APP_FLOAT_NUM_FLAG_EXIST;
@@ -374,4 +380,57 @@ CalcApp_enuErrorStatus CalcApp_CalcResult(void) {
 		CalcApp_enuCurrentState = CalcApp_enuDisplayResultState;
 
 	return ErrorStatus;
+}
+
+
+void CalcApp_vidDisplayResultProcess(void)
+{
+	u8 Loc_u8Temp;
+	s64 Loc_s64Temp = (CalcApp_strCurrOutputData.CalcApp_strResult);
+	u8 Loc_arrTemp [14] = {0};
+	u8 index = 0;
+	u8 i = 0;
+
+	/* negativeFlag for result */
+	u8 negativeFlag = (Loc_s64Temp < 0);
+
+	/* go to second row */
+	Lcd_vidGoTo(1, 0);
+
+	/* check for the sign of the result */
+	if ((negativeFlag)){
+
+		/* display negative sign in case of negative number in operand two */
+		Lcd_vidDisplayCharacter('-');	// '-' isn't the cute emoji
+	}
+
+	/* get rid off minus sign */
+	Loc_s64Temp *= (-1);
+
+	/* store digits of result */
+	while (Loc_s64Temp) {
+		Loc_u8Temp = Loc_s64Temp % 10;
+		Loc_arrTemp[index++] = Loc_u8Temp;
+		Loc_s64Temp /= 10;
+	}
+
+	/* display digits after decimal point */
+	for (i = index; i > 3; i--) {
+		Loc_u8Temp = Loc_arrTemp[i - 1];
+		Lcd_vidDisplayCharacter(Loc_u8Temp + '0');
+	}
+
+	if (index <= 3) {
+		Lcd_vidDisplayCharacter('0');
+	}
+	Lcd_vidDisplayCharacter('.');
+
+	/* display digits before decimal point */
+	for (i = 3; i > 0; i--) {
+		Loc_u8Temp = Loc_arrTemp[i - 1];
+		Lcd_vidDisplayCharacter(Loc_u8Temp + '0');
+	}
+
+	/* update current state */
+	CalcApp_enuCurrentState = CalcApp_enuDone;
 }

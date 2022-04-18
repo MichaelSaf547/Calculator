@@ -10,8 +10,8 @@
 /* ======================== Inclusions ======================== */
 /* ============================================================ */
  
-#include "../Library_Layer/Std_types.h"
-#include "../Library_Layer/Bit_utils.h"
+#include "../../Lib/Std_types.h"
+#include "../../Lib/Bit_utils.h"
 
 #include "gpio.h"
 
