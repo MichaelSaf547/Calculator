@@ -1,55 +1,103 @@
 /*
- * Sched.h
+ * Module: Scheduler
  *
- *  Created on: Apr 14, 2022
- *      Author:
+ * File Name: Sched.h
+ *
+ * Description:	header file for scheduler module for Arm Cortex M4 stm32f401cc
+ *
+ * Author: Sara Adel
  */
 
-#ifndef SERVICES_SCHED_SCHED_H_
-#define SERVICES_SCHED_SCHED_H_
+#ifndef SCHED_H_
+#define SCHED_H_
 
 
+/**************************************** Type Definitions **********************************/
 
+/**
+ * Type defined pointer to function with no arguments and no return
+ **/
+typedef  void (* SchedPointer_to_Function_t)(void);
+
+
+/**
+ * Type defined structure used to configure the PLL
+ * with elements:  Callback - pointer to function (takes the address of the task function)
+ * 				   CyclicTimeMs - function repeats each CyclicTime
+ *
+ * used in the function: Sched_RegisterRunnable
+ *
+ **/
 typedef struct
 {
-	void (* cbfP)(void);
-	u32 CyclicTimems;
+	SchedPointer_to_Function_t Callback;
+	u32 CyclicTimeMs;
 
 }Runnable_t;
 
+/**
+ * Type defined enumeration used to indicate the error status of a function
+ * with elements:  Sched_Ok - when function job done correctly
+ *				   Sched_IncompatibleCyclicTime - the cyclic time is not a divisor of the Tick
+ *	   			   Sched_RepeatedPriority - a runnable is already assigned to this priority
+ *				   Sched_NullPtr- incorrect address is passed to callback in Runnable
+ *
+ * used in all peripheral  function
+ *
+ **/
+typedef enum
+{
+	Sched_Ok,
+	Sched_IncompatibleCyclicTime,
+	Sched_RepeatedPriority,
+	Sched_NullPtr
+
+}Sched_ErrorStatus;
+
+/******************************** Function Prototypes ***************************************/
 
 /*
- * Sched_vidInit is used to initialize the scheduler
+ * Name: Sched_vidInit
  *
- * Inputs: It takes no inputs.
+ * InputArguments: None
  *
- * Return: It returns nothing.
+ * Return Value: None
+ *
+ * Description: initialize scheduler
+ *
  */
-extern void Sched_vidInit();
+ void Sched_vidInit(void);
 
 
-/*
- * Sched_vidStart is used to start the scheduler
- *
- * Inputs: It takes no inputs.
- *
- * Return: It returns nothing.
- */
-extern void Sched_vidStart();
+ /*
+  * Name: Sched_vidStart
+  *
+  * InputArguments: None
+  *
+  * Return Value: None
+  *
+  * Description: start scheduler
+  *
+  */
+ void Sched_vidStart(void);
 
 
-/*
- * Sched_RegisterRunnable is used to set a runnable task into the scheduler
- *
- * Inputs: It takes two inputs,	1- Runnable is a structure that contains
- * 													1- The function to call
- * 													2- The periodic time for this function
- * 								2- Priority is the priority of this task and two tasks can not have the same number.
- *
- * Return: It returns nothing.
- */
-extern void Sched_RegisterRunnable(Runnable_t * Runnable, u32 Priority);
+ /*
+  * Name: Sched_RegisterRunnable
+  *
+  * InputArguments:  Runnable - pointer to structure Runnable_t
+  * 				Priority - priority of task ( 0 highest, 255 lowest)
+  *
+  * Return Value: Sched_ErrorStatus - return enumeration of the error status :
+  *									Sched_Ok - when function job done correctly
+  *									Sched_IncompatibleCyclicTime - the cyclic time is not a divisor of the Tick
+  *									Sched_RepeatedPriority - a runnable is already assigned to this priority
+  *									Sched_NullPtr- incorrect address is passed to callback in Runnable
+  *
+  * Description: register a task to the scheduler
+  *
+  */
+ Sched_ErrorStatus Sched_RegisterRunnable(Runnable_t * Runnable, u8 Priority);
 
 
-
-#endif /* SERVICES_SCHED_SCHED_H_ */
+#endif /* SCHED_H_ */

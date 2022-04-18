@@ -1,24 +1,22 @@
 /*
- * Sched_cfg.h
+ * Module: Scheduler
  *
- *  Created on: Apr 14, 2022
- *      Author:
+ * File Name: Sched_cfg.h
+ *
+ * Description:	configuration file for scheduler module for Arm Cortex M4 stm32f401cc
+ *
+ * Author: Sara Adel
  */
-
-#ifndef SERVICES_SCHED_SCHED_CFG_H_
-#define SERVICES_SCHED_SCHED_CFG_H_
-
-
-/*
- * The number of tasks in the scheduler
- */
-#define RUNNABLELISTLENGTH			3
-
-/*Adjust the tick time of the system timer it should be the greatest common divisor of all the tasks*/
-#define TICK_MS				2
-
-/*SCHEDLOWESTCOMMON is the smallest number which modulus equals zero on all the tasks*/
-#define SCHEDLOWESTCOMMON 	100
+#ifndef SCHED_CFG_H_
+#define SCHED_CFG_H_
 
 
-#endif /* SERVICES_SCHED_SCHED_CFG_H_ */
+#define SCHED_MAX_TASKS_NUMBER_CFG			7
+
+
+#define SCHED_TICK_MS				1
+
+#define SCHED_MAX_CYCLIC_TIME_MS_CFG 	100
+
+
+#endif /* SCHED_CFG_H_ */
