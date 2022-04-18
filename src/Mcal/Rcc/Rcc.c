@@ -24,7 +24,7 @@ RCC_enuErrorStatus  RCC_enuSelectClk(u8 Copy_u8ClockSystem){
   u32 Loc_u32TimeOut = 0;
 
   /* CHECKING ERROR : RIGHT CLOCK */
-  if(Copy_u8ClockSystem >= RCC_HSI && Copy_u8ClockSystem <= RCC_PLL){
+  if(Copy_u8ClockSystem <= RCC_PLL){
 
     switch(Copy_u8ClockSystem){
 
@@ -162,7 +162,7 @@ RCC_enuErrorStatus  RCC_enuControlClk(u8 Copy_u8ClockSystem,RCC_enuClkStatus Cop
   }
 
   /* ERROR : CHOOSING WRONG CLOCK */
-  else if(!(Copy_u8ClockSystem >= RCC_HSI) &&  (Copy_u8ClockSystem <= RCC_PLL)){
+  else if((Copy_u8ClockSystem > RCC_PLL)){
     Ret_enuSystemCLOCK = RCC_enuNotOK;
   }
 
@@ -259,7 +259,7 @@ RCC_enuErrorStatus  RCC_enuCheckReady(u8 Copy_u8ClockSystem, u8* Add_pu8ReadySta
   RCC_enuErrorStatus Ret_enuSystemCLOCK = RCC_enuOK;
 
 
-  if((Copy_u8ClockSystem >= RCC_HSI) && (Copy_u8ClockSystem <= RCC_PLL)){
+  if((Copy_u8ClockSystem <= RCC_PLL)){
 
       switch(Copy_u8ClockSystem){
 

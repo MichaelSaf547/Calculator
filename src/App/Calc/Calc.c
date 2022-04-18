@@ -161,52 +161,58 @@ static void CalcApp_vidStartProcess(){
     }                
 }
 static void CalcApp_vidGetOperandOneProcess(){
-    
+	static u8 Loc_u8FirstEnter = 0;
+
     Keypad_tenuErrorStatus Loc_enuErrorStatus = Keypad_enuNotOk;
     
     u8 Loc_u8PressedValue;
 
     Loc_enuErrorStatus = Keypad_enuGetKey(&Loc_u8PressedValue);
     
+    if(GET_BIT(Loc_u8FirstEnter,0) == 0)
+    {
+    	SET_BIT(Loc_u8FirstEnter,0);
+    	if(CalcApp_u8Sign == 1)
+    	{
+    		SET_BIT(Loc_u8FirstEnter,4);
+    	}
+    }
+
     if(Loc_enuErrorStatus == Keypad_enuOk ){ 
     
         if(Loc_u8PressedValue >= '0' && Loc_u8PressedValue <= '9'){
-                        
+
+        	CLR_BIT(Loc_u8FirstEnter,4);
+
             /* BUFFER THE OPERATION */
             
             CalcApp_strCurrInputData.CalcApp_strOperand1 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand1) + Loc_u8PressedValue - '0');
 
-            
+
             /*Display the digit*/
             Lcd_vidDisplayCharacter(Loc_u8PressedValue);
         }
 
-        else if(Loc_u8PressedValue == '-' || Loc_u8PressedValue == '+' || Loc_u8PressedValue == '*' || Loc_u8PressedValue == '/'){
-            
-        	/*Check if the value of operand 1 is 0 ignore the operation*/
-        	if(CalcApp_strCurrInputData.CalcApp_strOperand1 == 0)
-        	{
-        		/*Do nothing*/
-        	}
-        	else
-        	{
-                /* BUFFER THE OPERATION */
-                CalcApp_strCurrInputData.CalcApp_strOperation = Loc_u8PressedValue;
+        else if((GET_BIT(Loc_u8FirstEnter,4) == 0) && (Loc_u8PressedValue == '-' || Loc_u8PressedValue == '+' || Loc_u8PressedValue == '*' || Loc_u8PressedValue == '/')){
+            CLR_BIT(Loc_u8FirstEnter,0);
 
-                /* MINUS OPERATION */
-				if(CalcApp_u8Sign == 1)
-				{
-					CalcApp_strCurrInputData.CalcApp_strOperand1 *= -1;
-				}
+			/* BUFFER THE OPERATION */
+			CalcApp_strCurrInputData.CalcApp_strOperation = Loc_u8PressedValue;
 
-                /*Display the operator*/
-                Lcd_vidDisplayCharacter(Loc_u8PressedValue);
+			/* MINUS OPERATION */
+			if(CalcApp_u8Sign == 1)
+			{
+				CalcApp_strCurrInputData.CalcApp_strOperand1 *= -1;
+			}
 
-                /* CHANGE THE CURRENT STATE */
-                CalcApp_enuCurrentState = CalcApp_enuGetOperandTwoState;
+			/*Display the operator*/
+			Lcd_vidDisplayCharacter(Loc_u8PressedValue);
 
-                CalcApp_u8Sign = 0;
-        	}
+			/* CHANGE THE CURRENT STATE */
+			CalcApp_enuCurrentState = CalcApp_enuGetOperandTwoState;
+
+			CalcApp_u8Sign = 0;
+
         }
 
         else{
@@ -218,7 +224,8 @@ static void CalcApp_vidGetOperandOneProcess(){
 
 
 static void CalcApp_vidGetOperandTwoProcess(){
-    
+    static u8 Loc_u8GotDigit = 0;
+
     Keypad_tenuErrorStatus Loc_enuErrorStatus = Keypad_enuNotOk;
     
     u8 Loc_u8PressedValue;
@@ -227,7 +234,8 @@ static void CalcApp_vidGetOperandTwoProcess(){
     
     if(Loc_enuErrorStatus == Keypad_enuOk ){ 
         if(Loc_u8PressedValue >= '0' && Loc_u8PressedValue <= '9'){
-                        
+            Loc_u8GotDigit = 1;
+
             /* BUFFER THE OPERATION */
             
             CalcApp_strCurrInputData.CalcApp_strOperand2 = ((10 * CalcApp_strCurrInputData.CalcApp_strOperand2) + Loc_u8PressedValue - '0');
@@ -239,7 +247,7 @@ static void CalcApp_vidGetOperandTwoProcess(){
         }
         
         /*Check if operand two is zero and pressed key is - and the operator is also -*/
-        else if(CalcApp_strCurrInputData.CalcApp_strOperand2 == 0 && Loc_u8PressedValue == '-')
+        else if(Loc_u8GotDigit == 0 && Loc_u8PressedValue == '-')
         {
         	/*Check if the operator equal '-' just ignore the input*/
         	if(CalcApp_strCurrInputData.CalcApp_strOperation == '-')
@@ -260,8 +268,9 @@ static void CalcApp_vidGetOperandTwoProcess(){
         	}
         }
 
-        else if((Loc_u8PressedValue == '-' || Loc_u8PressedValue == '+' || Loc_u8PressedValue == '*' || Loc_u8PressedValue == '/') && (CalcApp_strCurrInputData.CalcApp_strOperand2 != ZERO)){
-            
+        else if((Loc_u8PressedValue == '-' || Loc_u8PressedValue == '+' || Loc_u8PressedValue == '*' || Loc_u8PressedValue == '/') && (Loc_u8GotDigit == 1)){
+            Loc_u8GotDigit = 0;
+
         	switch(CalcApp_strCurrInputData.CalcApp_strOperation)
         	{
 				case '+':
@@ -349,8 +358,9 @@ static void CalcApp_vidGetOperandTwoProcess(){
         	}
         }
 
-        else if(Loc_u8PressedValue == '=')
+        else if(Loc_u8PressedValue == '=' && Loc_u8GotDigit == 1)
         {
+        	Loc_u8GotDigit = 0;
 
         	CalcApp_enuCurrentState = CalcApp_enuCalculateResultState;
 
@@ -431,8 +441,8 @@ CalcApp_enuErrorStatus CalcApp_CalcResult(void) {
 	/*
 	 * set state to the next state to display results
 	 */
-
-		CalcApp_enuCurrentState = CalcApp_enuDisplayResultState;
+		if(CalcApp_enuCurrentState != CalcApp_enuDone)
+			CalcApp_enuCurrentState = CalcApp_enuDisplayResultState;
 
 	return ErrorStatus;
 }
@@ -458,94 +468,100 @@ void CalcApp_vidDisplayResultProcess(void)
 		/* get rid off minus sign */
 		Loc_s32Temp *= (-1);
 	}
-
-	/* store digits of result */
-	while (Loc_s32Temp) {
-		Loc_u8Temp = Loc_s32Temp % 10;
-		Loc_arrTemp[index++] = Loc_u8Temp;
-		Loc_s32Temp /= 10;
-	}
-
-	/* display digits after decimal point */
-	if((index & ONE) == ONE)
+	if(Loc_s32Temp == 0)
 	{
-		for (i = 1; i <= (index >> 1); i++) {
-			Loc_u8Temp = Loc_arrTemp[i];
-			Loc_arrTemp[i] = Loc_arrTemp[index - i];
-			Loc_arrTemp[index - i] = Loc_u8Temp;
+		Loc_arrTemp[0] = '0';
+		Lcd_vidDisplayString(Loc_arrTemp,1,1,2);
+	}
+	else{
+		/* store digits of result */
+		while (Loc_s32Temp) {
+			Loc_u8Temp = Loc_s32Temp % 10;
+			Loc_arrTemp[index++] = Loc_u8Temp;
+			Loc_s32Temp /= 10;
 		}
-	}
-	else
-	{
-		for (i = 1; i < (index >> 1); i++) {
-			Loc_u8Temp = Loc_arrTemp[i];
-			Loc_arrTemp[i] = Loc_arrTemp[index - i];
-			Loc_arrTemp[index - i] = Loc_u8Temp;
-		}
-	}
 
-
-	for(i = 1; i < index; i++)
-	{
-		Loc_arrTemp[i] += '0';
-	}
-
-	if(CalcApp_strCurrInputData.CalcApp_strOperation == '/')
-	{
-		if (index <= FOUR) {
-			for(i = index; i > ONE; i--)
-			{
-				Loc_arrTemp[i + 1] = Loc_arrTemp[i - 1];
+		/* display digits after decimal point */
+		if((index & ONE) == ONE)
+		{
+			for (i = 1; i <= (index >> 1); i++) {
+				Loc_u8Temp = Loc_arrTemp[i];
+				Loc_arrTemp[i] = Loc_arrTemp[index - i];
+				Loc_arrTemp[index - i] = Loc_u8Temp;
 			}
-			Loc_arrTemp[ONE] = '0';
-			Loc_arrTemp[TWO] = '.';
+		}
+		else
+		{
+			for (i = 1; i < (index >> 1); i++) {
+				Loc_u8Temp = Loc_arrTemp[i];
+				Loc_arrTemp[i] = Loc_arrTemp[index - i];
+				Loc_arrTemp[index - i] = Loc_u8Temp;
+			}
+		}
 
-			if(negativeFlag)
-			{
-				Lcd_vidDisplayString(Loc_arrTemp, index + 2, 1, 2);
+
+		for(i = 1; i < index; i++)
+		{
+			Loc_arrTemp[i] += '0';
+		}
+
+		if(CalcApp_strCurrInputData.CalcApp_strOperation == '/')
+		{
+			if (index <= FOUR) {
+				for(i = index; i > ONE; i--)
+				{
+					Loc_arrTemp[i + 1] = Loc_arrTemp[i - 1];
+				}
+				Loc_arrTemp[ONE] = '0';
+				Loc_arrTemp[TWO] = '.';
+
+				if(negativeFlag)
+				{
+					Lcd_vidDisplayString(Loc_arrTemp, index + 2, 1, 2);
+				}
+				else
+				{
+					Lcd_vidDisplayString(&(Loc_arrTemp[1]), index + 1, 1, 2);
+				}
+
 			}
 			else
 			{
-				Lcd_vidDisplayString(&(Loc_arrTemp[1]), index + 1, 1, 2);
+				for(i = index; i > (index - THREE); i--)
+				{
+					Loc_arrTemp[i] = Loc_arrTemp[i - 1];
+				}
+
+				Loc_arrTemp[i] = '.';
+
+				if(negativeFlag)
+				{
+					Lcd_vidDisplayString(Loc_arrTemp, index + 1, 1, 2);
+				}
+				else
+				{
+					Lcd_vidDisplayString(&(Loc_arrTemp[1]), index, 1, 2);
+				}
 			}
+
+
 
 		}
 		else
 		{
-			for(i = index; i > (index - THREE); i--)
-			{
-				Loc_arrTemp[i] = Loc_arrTemp[i - 1];
-			}
-
-			Loc_arrTemp[i] = '.';
-
 			if(negativeFlag)
 			{
-				Lcd_vidDisplayString(Loc_arrTemp, index + 1, 1, 2);
+				Lcd_vidDisplayString(Loc_arrTemp, index, 1, 2);
 			}
 			else
 			{
-				Lcd_vidDisplayString(&(Loc_arrTemp[1]), index, 1, 2);
+				Lcd_vidDisplayString(&(Loc_arrTemp[1]), index - ONE, 1, 2);
 			}
 		}
-
-
-
 	}
-	else
-	{
-		if(negativeFlag)
-		{
-			Lcd_vidDisplayString(Loc_arrTemp, index, 1, 2);
-		}
-		else
-		{
-			Lcd_vidDisplayString(&(Loc_arrTemp[1]), index - ONE, 1, 2);
-		}
-	}
+		/* update current state */
+		CalcApp_enuCurrentState = CalcApp_enuDone;
 
-	/* update current state */
-	CalcApp_enuCurrentState = CalcApp_enuDone;
 }
 
 void CalcApp_vidDisplayOperand1(void)
@@ -569,48 +585,55 @@ void CalcApp_vidDisplayOperand1(void)
 		Loc_s32Temp *= (-1);
 	}
 
-	/* store digits of result */
-	while (Loc_s32Temp) {
-		Loc_u8Temp = Loc_s32Temp % 10;
-		Loc_arrTemp[index++] = Loc_u8Temp;
-		Loc_s32Temp /= 10;
-	}
-
-	/* display digits after decimal point */
-	if((index & ONE) == ONE)
+	if(Loc_s32Temp == 0)
 	{
-		for (i = 1; i <= (index >> 1); i++) {
-			Loc_u8Temp = Loc_arrTemp[i];
-			Loc_arrTemp[i] = Loc_arrTemp[index - i];
-			Loc_arrTemp[index - i] = Loc_u8Temp;
+		Loc_arrTemp[0] = '0';
+		Loc_arrTemp[1] = CalcApp_strCurrInputData.CalcApp_strOperation;
+		Lcd_vidDisplayString(Loc_arrTemp,2,0,0);
+	}
+	else{
+		/* store digits of result */
+		while (Loc_s32Temp) {
+			Loc_u8Temp = Loc_s32Temp % 10;
+			Loc_arrTemp[index++] = Loc_u8Temp;
+			Loc_s32Temp /= 10;
+		}
+
+		/* display digits after decimal point */
+		if((index & ONE) == ONE)
+		{
+			for (i = 1; i <= (index >> 1); i++) {
+				Loc_u8Temp = Loc_arrTemp[i];
+				Loc_arrTemp[i] = Loc_arrTemp[index - i];
+				Loc_arrTemp[index - i] = Loc_u8Temp;
+			}
+		}
+		else
+		{
+			for (i = 1; i < (index >> 1); i++) {
+				Loc_u8Temp = Loc_arrTemp[i];
+				Loc_arrTemp[i] = Loc_arrTemp[index - i];
+				Loc_arrTemp[index - i] = Loc_u8Temp;
+			}
+		}
+
+
+		for(i = 1; i < index; i++)
+		{
+			Loc_arrTemp[i] += '0';
+		}
+
+		Loc_arrTemp[index++] = CalcApp_strCurrInputData.CalcApp_strOperation;
+
+		if(negativeFlag)
+		{
+			Lcd_vidDisplayString(Loc_arrTemp, index, 0, 0);
+		}
+		else
+		{
+			Lcd_vidDisplayString(&(Loc_arrTemp[1]), index - ONE, 0, 0);
 		}
 	}
-	else
-	{
-		for (i = 1; i < (index >> 1); i++) {
-			Loc_u8Temp = Loc_arrTemp[i];
-			Loc_arrTemp[i] = Loc_arrTemp[index - i];
-			Loc_arrTemp[index - i] = Loc_u8Temp;
-		}
-	}
-
-
-	for(i = 1; i < index; i++)
-	{
-		Loc_arrTemp[i] += '0';
-	}
-
-	Loc_arrTemp[index++] = CalcApp_strCurrInputData.CalcApp_strOperation;
-
-	if(negativeFlag)
-	{
-		Lcd_vidDisplayString(Loc_arrTemp, index, 0, 0);
-	}
-	else
-	{
-		Lcd_vidDisplayString(&(Loc_arrTemp[1]), index - ONE, 0, 0);
-	}
-
 	/* update current state */
 	CalcApp_enuCurrentState = CalcApp_enuGetOperandTwoState;
 }
