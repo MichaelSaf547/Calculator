@@ -13,16 +13,15 @@
 /* ==================================================================== */
 typedef struct{
     
-    s64 CalcApp_strOperand1;
-    s64 CalcApp_strOperand2;
+    s32 CalcApp_strOperand1;
+    s32 CalcApp_strOperand2;
     u8  CalcApp_strOperation;
     
 }CalcApp_strInputData;
 
 typedef struct{
 
-    u8 CalcApp_strFloatNumFlag; /*flag set to 1 to detect if result is float*/
-    s64 CalcApp_strResult;
+    s32 CalcApp_strResult;
     
 }CalcApp_strOutputData;
 
@@ -31,12 +30,9 @@ typedef enum{
     CalcApp_enuStartState, 
     
     CalcApp_enuGetOperandOneState,
-    CalcApp_enuDisplayOperandOneState,
-    CalcApp_enuDisplayOperationState,
     CalcApp_enuGetOperandTwoState,
-    CalcApp_enuDisplayOperandTwoState,
     CalcApp_enuCalculateResultState,
-    
+	CalcApp_enuDisplayOperand1State,
     CalcApp_enuDisplayResultState,
 	CalcApp_enuDone
     
@@ -55,6 +51,6 @@ typedef enum {
 void CalcApp_vidTask();
 
 
-
+extern void CalcApp_Init(void);
 
 #endif /* APP_CALC_CALC_H_ */
