@@ -1,8 +1,8 @@
 /******************************************************************************
  * @file    gpio.c
  * @author  Joseph Girgis
- * @version V1.0
- * @date    14-April-2022
+ * @version V1.1
+ * @date    17-April-2022
  * @brief   Source file of GPIO MCAL module.
  ******************************************************************************/
  
@@ -10,8 +10,8 @@
 /* ======================== Inclusions ======================== */
 /* ============================================================ */
  
-#include "../../Lib/Std_types.h"
-#include "../../Lib/Bit_utils.h"
+#include "../Library_Layer/Std_types.h"
+#include "../Library_Layer/Bit_utils.h"
 
 #include "gpio.h"
 
@@ -114,8 +114,6 @@ gpioErrorStatus_t gpio_getPinValue(void *Port, u16 Pin, pu8 Value)
 	/* Inputs Validation */
 	if ((Port != GPIO_PORTA) && (Port != GPIO_PORTB) && (Port != GPIO_PORTC)) {
 		errorStatus = gpio_enuInvalidPort;
-	} else if (Pin > 15) {
-		errorStatus = gpio_enuInvalidPin;
 	} else {	/* Getting Pin Value */
 		if ((((GPIO_t*)Port)->IDR) & (Pin))
 			*Value = GPIO_HIGH;
